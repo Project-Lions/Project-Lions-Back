@@ -1,7 +1,7 @@
-package com.project_lions.back.domain.domain;
+package com.project_lions.back.domain;
 
-import com.project_lions.back.domain.domain.common.BaseEntity;
-import com.project_lions.back.domain.domain.enums.Role;
+import com.project_lions.back.domain.common.BaseEntity;
+import com.project_lions.back.domain.enums.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.project_lions.back.domain.domain.common;
+package com.project_lions.back.domain.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
