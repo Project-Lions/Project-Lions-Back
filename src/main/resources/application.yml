@@ -9,3 +9,4 @@ spring:
     url: jdbc:mysql://${DB_HOST}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+
