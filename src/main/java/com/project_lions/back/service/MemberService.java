@@ -1,5 +1,7 @@
 package com.project_lions.back.service;
 
+import com.project_lions.back.apiPayload.code.status.ErrorStatus;
+import com.project_lions.back.apiPayload.exception.handler.MemberHandler;
 import com.project_lions.back.domain.Member;
 import com.project_lions.back.domain.dto.MemberRequestDto;
 import com.project_lions.back.repository.MemberRepository;
@@ -14,7 +16,7 @@ public class MemberService {
 
     public Member save(MemberRequestDto.SignUp memberSignUpDto) {
         if (memberRepository.existsByEmail(memberSignUpDto.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 회원입니다.");
+            throw new MemberHandler(ErrorStatus.MEMBER_EMAIL_ALREADY_EXIST);
         }
         return memberRepository.save(memberSignUpDto);
     }
