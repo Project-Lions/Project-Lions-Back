@@ -4,6 +4,7 @@ import com.project_lions.back.apiPayload.ApiResponse;
 import com.project_lions.back.apiPayload.code.status.SuccessStatus;
 import com.project_lions.back.domain.Member;
 import com.project_lions.back.domain.dto.MemberRequestDto;
+import com.project_lions.back.domain.dto.MemberResponseDto;
 import com.project_lions.back.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +23,9 @@ public class MemberController {
   @PostMapping
   public ApiResponse<?> signUp(@RequestBody @Validated MemberRequestDto.SignUp memberSignUpDto) {
     Member savedMember = memberService.save(memberSignUpDto);
-    return ApiResponse.of(SuccessStatus.MEMBER_JOIN, savedMember);
+    return ApiResponse.of(SuccessStatus.MEMBER_JOIN, MemberResponseDto.SignUpDto.builder()
+        .id(savedMember.getId())
+        .email(savedMember.getEmail())
+        .build());
   }
 }
