@@ -1,6 +1,13 @@
 package com.project_lions.back.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project_lions.back.global.jwt.JwtService;
+import com.project_lions.back.global.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.project_lions.back.global.login.filter.JsonUsernamePasswordAuthenticationFilter;
+import com.project_lions.back.global.login.handler.LoginFailureHandler;
+import com.project_lions.back.global.login.handler.LoginSuccessJWTProvideHandler;
+import com.project_lions.back.repository.MemberRepository;
+import com.project_lions.back.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +33,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+  private final LoginService loginService;
   private final ObjectMapper objectMapper;
+  private final MemberRepository memberRepository;
+  private final JwtService jwtService;
 
   private static final String SIGNUP_URL = "/api/members";
   private static final String LOGIN_URL = "/api/members/login";
@@ -51,13 +61,55 @@ public class SecurityConfig {
             .requestMatchers(AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         )
+        .addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class)
+        .addFilterAfter(jwtAuthenticationProcessingFilter(),
+            JsonUsernamePasswordAuthenticationFilter.class)
         .httpBasic(withDefaults());
     return http.build();
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder(){
+  public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager() {
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+    provider.setPasswordEncoder(passwordEncoder());
+    provider.setUserDetailsService(loginService);
+
+    return new ProviderManager(provider);
+  }
+
+  @Bean
+  public LoginSuccessJWTProvideHandler loginSuccessJWTProvideHandler() {
+    return new LoginSuccessJWTProvideHandler(jwtService, memberRepository);//변경
+  }
+
+  @Bean
+  public LoginFailureHandler loginFailureHandler() {
+    return new LoginFailureHandler();
+  }
+
+  @Bean
+  public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
+    JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
+
+    jsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
+
+    jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler());
+
+    jsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());//변경
+    return jsonUsernamePasswordLoginFilter;
+  }
+
+  @Bean
+  public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter(){
+    JwtAuthenticationProcessingFilter jsonUsernamePasswordLoginFilter = new JwtAuthenticationProcessingFilter(jwtService, memberRepository);
+
+    return jsonUsernamePasswordLoginFilter;
   }
 
   @Bean

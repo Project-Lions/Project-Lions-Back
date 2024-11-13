@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @MappedSuperclass
-public class BaseEntity{
+public class BaseEntity {
 
   @Column(updatable = false)
   private LocalDateTime created_at;
@@ -17,7 +17,7 @@ public class BaseEntity{
   private LocalDateTime updated_at;
 
   @PrePersist
-  public void prePersist(){
+  public void prePersist() {
     LocalDateTime now = LocalDateTime.now();
     created_at = now;
     updated_at = now;
