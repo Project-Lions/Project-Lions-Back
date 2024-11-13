@@ -1,0 +1,19 @@
+#Server Configuration
+server:
+  port: 8080
+
+# Database Configuration
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+    hibernate:
+      ddl-auto: create-drop
+
