@@ -16,5 +16,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   Optional<Member> findByRefreshToken(String refreshToken);
 
-  void delete(Member member);
+  void deleteByEmail(String email);
 }

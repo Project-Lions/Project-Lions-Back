@@ -37,7 +37,8 @@ public class MemberService {
     Member member = memberRepository.findByEmail(SecurityUtil.getLoginUsername())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress());
+    member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(),
+        memberUpdateDto.getAddress());
     return member;
   }
 
@@ -46,5 +47,9 @@ public class MemberService {
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     return member;
+  }
+
+  public void delete() {
+    memberRepository.deleteByEmail(SecurityUtil.getLoginUsername());
   }
 }
