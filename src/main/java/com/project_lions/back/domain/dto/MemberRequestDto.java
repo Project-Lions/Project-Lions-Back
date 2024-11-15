@@ -35,4 +35,22 @@ public class MemberRequestDto {
     @NotBlank(message = "주소를 입력해주세요")
     private String address;
   }
+
+  @Data
+  @Builder
+  public class Update {
+
+    @NotBlank(message = "이름을 입력해주세요")
+    @Size(min = 2, message = "사용자 이름이 너무 짧습니다.")
+    @Pattern(regexp = "^[A-Za-z가-힣]+$", message = "사용자 이름은 한글 또는 알파벳만 입력해주세요.")
+    private String name;
+
+    @NotBlank(message = "전화번호를 입력해주세요")
+    @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$",
+        message = "전화번호 형식이 올바르지 않습니다.")
+    private String phone;
+
+    @NotBlank(message = "주소를 입력해주세요")
+    private String address;
+  }
 }

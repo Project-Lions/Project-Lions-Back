@@ -58,6 +58,11 @@ public class Member extends BaseEntity {
   private String refreshToken; //리프레시 토큰
 
   //== 정보 수정 ==//
+  public void update(String name, String phone, String address) {
+    this.name = name;
+    this.phone = phone;
+    this.address = address;
+  }
 
   public void updateRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
