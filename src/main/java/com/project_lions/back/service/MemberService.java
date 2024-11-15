@@ -6,6 +6,7 @@ import com.project_lions.back.domain.Member;
 import com.project_lions.back.domain.dto.MemberRequestDto;
 import com.project_lions.back.domain.enums.Role;
 import com.project_lions.back.repository.MemberRepository;
+import com.project_lions.back.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,13 @@ public class MemberService {
         .address(memberSignUpDto.getAddress())
         .role(Role.USER)
         .build());
+  }
+
+  public Member update(MemberRequestDto.Update memberUpdateDto) {
+    Member member = memberRepository.findByEmail(SecurityUtil.getLoginUsername())
+        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+    member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress());
+    return member;
   }
 }

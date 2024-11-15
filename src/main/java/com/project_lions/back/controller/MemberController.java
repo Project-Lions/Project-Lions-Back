@@ -9,6 +9,7 @@ import com.project_lions.back.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,21 @@ public class MemberController {
     return ApiResponse.of(SuccessStatus.MEMBER_JOIN, MemberResponseDto.SignUpDto.builder()
         .id(savedMember.getId())
         .email(savedMember.getEmail())
+        .name(savedMember.getName())
+        .phone(savedMember.getPhone())
+        .address(savedMember.getAddress())
+        .build());
+  }
+
+  @PutMapping
+  public ApiResponse<?> update(@RequestBody @Validated MemberRequestDto.Update memberUpdateDto) {
+    Member updatedMember = memberService.update(memberUpdateDto);
+    return ApiResponse.of(SuccessStatus.MEMBER_JOIN, MemberResponseDto.SignUpDto.builder()
+        .id(updatedMember.getId())
+        .email(updatedMember.getEmail())
+        .name(updatedMember.getName())
+        .phone(updatedMember.getPhone())
+        .address(updatedMember.getAddress())
         .build());
   }
 }
