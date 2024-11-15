@@ -19,5 +19,19 @@ public class MemberResponseDto {
 
     private Long id;
     private String email;
+    private String name;
+    private String phone;
+    private String address;
+  }
+
+  @Data
+  @Builder
+  public static class UpdateDto {
+
+    private Long id;
+    private String email;
+    private String name;
+    private String phone;
+    private String address;
   }
 }
