@@ -27,3 +27,15 @@ jwt:
   refresh:
     expiration: 1209600 # 14days
     header: Authorization-refresh
+
+cloud:
+  aws:
+    s3:
+      bucket: moyeothon
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

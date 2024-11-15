@@ -20,6 +20,9 @@ public enum SuccessStatus implements BaseCode {
   MEMBER_DELETE(HttpStatus.OK, "MEMBER2004", "회원 탈퇴 성공"),
   MEMBER_JOIN(HttpStatus.OK, "MEMBER2005", "회원 가입 성공"),
   MEMBER_LOGIN(HttpStatus.OK, "MEMBER2006", "로그인 성공"),
+
+  // 멤버 관련 응답
+  IMAGE_UPLOAD(HttpStatus.OK, "IMAGE2001", "이미지 업로드 성공"),
   ;
 
   private final HttpStatus httpStatus;
