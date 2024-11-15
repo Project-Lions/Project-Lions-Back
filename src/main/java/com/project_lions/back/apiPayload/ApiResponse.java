@@ -7,9 +7,11 @@ import com.project_lions.back.apiPayload.code.BaseCode;
 import com.project_lions.back.apiPayload.code.status.SuccessStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@RequiredArgsConstructor
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class ApiResponse<T> {
 
@@ -30,6 +32,11 @@ public class ApiResponse<T> {
   public static <T> ApiResponse<T> of(BaseCode code, T result) {
     return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(),
         code.getReasonHttpStatus().getMessage(), result);
+  }
+
+  public static <T> ApiResponse<T> of(BaseCode code) {
+    return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(),
+        code.getReasonHttpStatus().getMessage());
   }
 
   // 실패한 경우 응답 생성
