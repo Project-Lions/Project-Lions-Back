@@ -40,4 +40,11 @@ public class MemberService {
     member.update(memberUpdateDto.getName(), memberUpdateDto.getPhone(), memberUpdateDto.getAddress());
     return member;
   }
+
+  public Member findMy() {
+    Member member = memberRepository.findByEmail(SecurityUtil.getLoginUsername())
+        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+    return member;
+  }
 }
