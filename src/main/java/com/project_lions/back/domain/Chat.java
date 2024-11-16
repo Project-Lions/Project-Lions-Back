@@ -13,8 +13,7 @@ public class Chat {
 
   @Id
   private String id;
-  private Long shopId;
-  private Long customerId;
+  private Long receiverId;
   private Long senderId;
   private String message;
   private LocalDateTime createdAt;

@@ -9,6 +9,6 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface ChatRepository extends ReactiveMongoRepository<Chat, String> {
 
-  @Query("{ $or: [ { shopId: ?0, customerId: ?1 }, { customerId: ?0, shopId: ?1 } ] }")
-  Flux<Chat> findByShopIdAndCustomerId(Long shopId, Long customerId);
+  @Query("{ $or: [ { senderId: ?0, receiverId: ?1 }, { receiverId: ?0, senderId: ?1 } ] }")
+  Flux<Chat> findBySenderIdAndReceiverId(Long senderId, Long receiverId);
 }
