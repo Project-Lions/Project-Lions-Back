@@ -38,7 +38,7 @@ public class MemberRequestDto {
 
   @Data
   @Builder
-  public class Update {
+  public static class Update {
 
     @NotBlank(message = "이름을 입력해주세요")
     @Size(min = 2, message = "사용자 이름이 너무 짧습니다.")
