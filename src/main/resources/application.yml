@@ -17,6 +17,21 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+  servlet:
+    multipart:
+      max-file-size: 5MB # 파일의 용량 제한
+      max-request-size: 10MB # 전체 최대 크기 용량 제한
+      resolve-lazily: true
+
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      authentication-database: admin
+      database: ${MONGO_DB}
+      username: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+
 jwt:
   secret-key: ${jwt_secret_key}
 
@@ -31,7 +46,7 @@ jwt:
 cloud:
   aws:
     s3:
-      bucket: moyeothon
+      bucket: ${S3_BUCKET_NAME}
     credentials:
       accessKey: ${S3_ACCESS_KEY}
       secretKey: ${S3_SECRET_KEY}
