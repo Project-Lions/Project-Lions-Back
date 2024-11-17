@@ -1,0 +1,56 @@
+#Server Configuration
+server:
+  port: 8080
+
+# Database Configuration
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+    hibernate:
+      ddl-auto: create-drop
+
+  servlet:
+    multipart:
+      max-file-size: 5MB # 파일의 용량 제한
+      max-request-size: 10MB # 전체 최대 크기 용량 제한
+      resolve-lazily: true
+
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      authentication-database: admin
+      database: ${MONGO_DB}
+      username: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+
+jwt:
+  secret-key: ${jwt_secret_key}
+
+  access:
+    expiration: 345600 # 4days
+    header: Authorization
+
+  refresh:
+    expiration: 1209600 # 14days
+    header: Authorization-refresh
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
