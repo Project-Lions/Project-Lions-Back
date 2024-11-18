@@ -64,4 +64,5 @@ public class MemberController {
     memberService.delete();
     return ApiResponse.of(SuccessStatus.MEMBER_DELETE);
   }
+
 }

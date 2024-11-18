@@ -59,6 +59,7 @@ public class SecurityConfig {
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/swagger-ui", "/swagger-ui/*", "/v3/api-docs", "/v3/api-docs/*").permitAll()
             .requestMatchers(AUTH_WHITELIST).permitAll()
+            .requestMatchers("/api/shops/find/near", "/api/shops/find/tag").permitAll()
             .anyRequest().authenticated()
         )
         .addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class)
@@ -67,6 +68,9 @@ public class SecurityConfig {
         .httpBasic(withDefaults());
     return http.build();
   }
+
+
+
 
   @Bean
   public PasswordEncoder passwordEncoder() {

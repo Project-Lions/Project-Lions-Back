@@ -2,19 +2,15 @@ package com.project_lions.back.domain;
 
 import com.project_lions.back.domain.common.BaseEntity;
 import com.project_lions.back.domain.enums.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "MEMBER")
 @Getter
@@ -54,6 +50,16 @@ public class Member extends BaseEntity {
   @Column(nullable = false)
   private Role role;
 
+  //샵 admin
+  @OneToMany(mappedBy = "owner")
+  private List<Shop> shops = new ArrayList<>();
+
+  //찜한 샵
+  @ManyToMany
+  @JoinTable(name = "member_likes_shop",
+          joinColumns = @JoinColumn(name = "MEMBER_id"),
+          inverseJoinColumns = @JoinColumn(name = "shop_id"))
+  private List<Shop> likeshops = new ArrayList<>();
 
   private String refreshToken; //리프레시 토큰
 
