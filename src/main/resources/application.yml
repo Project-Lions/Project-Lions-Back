@@ -17,7 +17,6 @@ spring:
 
     hibernate:
       ddl-auto: update
-
   servlet:
     multipart:
       max-file-size: 5MB # 파일의 용량 제한

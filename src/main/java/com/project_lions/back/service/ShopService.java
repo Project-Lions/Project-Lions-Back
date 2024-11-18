@@ -19,6 +19,9 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,8 +32,10 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
-    public ResponseEntity<?> createShop(ShopCreateDTO shopDTO) {
+
+    public ResponseEntity<?> createShop(ShopCreateDTO shopDTO, MultipartFile image) {
 
         Member member = findMember();
         if (shopRepository.existsByShopName(shopDTO.getShopName())) {
@@ -43,6 +48,8 @@ public class ShopService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 소품샵 태그입니다.");
         }
 
+        String shopImage = s3Service.saveFile(image);
+
         Point shopLocation = createPoint(shopDTO.getLatitude(), shopDTO.getLongitude());
         Shop shop = Shop.builder()
                 .shopName(shopDTO.getShopName())
@@ -50,6 +57,7 @@ public class ShopService {
                 .ownerName(member.getPhone())
                 .openAt(shopDTO.getOpenAt())
                 .closeAt(shopDTO.getCloseAt())
+                .image(shopImage)
                 .location(shopLocation)
                 .shopTags(tagList)
                 .owner(member)
@@ -60,7 +68,7 @@ public class ShopService {
         return ResponseEntity.ok(shopDTO);
     }
 
-    public ResponseEntity<?> updateShop(ShopUpdateDTO shopDTO, Long shopId) {
+    public ResponseEntity<?> updateShop(ShopUpdateDTO shopDTO, Long shopId, MultipartFile image) {
 
         Member member = findMember();
         Optional<Shop> checkShop=shopRepository.findById(shopId);
@@ -76,6 +84,7 @@ public class ShopService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("존재하지 않는 소품샵 태그입니다.");
             }
             Point shopLocation = createPoint(shopDTO.getLatitude(), shopDTO.getLongitude());
+            String shopImage = s3Service.saveFile(image);
 
             Optional<Shop> updateShop=shopRepository.findById(shopId);
 
@@ -86,6 +95,7 @@ public class ShopService {
             updateShop.get().setShopTags(tagList);
             updateShop.get().setOpenAt(shopDTO.getOpenAt());
             updateShop.get().setCloseAt(shopDTO.getCloseAt());
+            updateShop.get().setImage(shopImage);
             shopRepository.save(updateShop.get());
             return ResponseEntity.ok(shopDTO);
         }
@@ -101,8 +111,8 @@ public class ShopService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("삭제할 소품샵이 존재하지 않습니다.");
         }
         shopRepository.delete(deleteShop.get());
+        s3Service.deleteFile(deleteShop.get().getImage());
         return ResponseEntity.ok().body("소품샵 삭제\n삭제된 소품샵 이름: "+deleteShop.get().getShopName());
-
     }
 
     //소품샵 찜하기
@@ -123,6 +133,7 @@ public class ShopService {
     }
 
     //찜한 소품샵
+    //이미지 추가
     public List<Shop> findLikeShop(){
         Member member = findMember();
         return shopRepository.findLikeShops(member.getId())

@@ -48,6 +48,9 @@ public class Shop {
     @JsonIgnore
     private Point location;  //주소
 
+    @Column(nullable = false)
+    private String image;
+
     @ManyToMany
     @Builder.Default
     private Set<Tag> shopTags=new HashSet<>();  //카테고리

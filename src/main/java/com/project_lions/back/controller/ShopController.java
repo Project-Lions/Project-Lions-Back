@@ -2,11 +2,16 @@ package com.project_lions.back.controller;
 
 import com.project_lions.back.domain.Shop;
 import com.project_lions.back.domain.dto.*;
+import com.project_lions.back.service.S3Service;
 import com.project_lions.back.service.ShopService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +23,15 @@ import java.util.stream.Collectors;
 public class ShopController {
 
     private final ShopService shopService;
+    private final S3Service s3Service;
 
-    @PostMapping
+    @PostMapping(value="", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> create(@RequestBody ShopCreateDTO shopCreateDTO) {
-        return shopService.createShop(shopCreateDTO);
+    public ResponseEntity<?> create(
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "shop") @Valid ShopCreateDTO shopCreateDTO) {
+
+        return shopService.createShop(shopCreateDTO, image);
     }
 
 
@@ -32,10 +41,13 @@ public class ShopController {
         return shopService.deleteShop(shopId);
     }
 
-    @PutMapping("/update")
+    @PutMapping(value="/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> update(@RequestParam Long shopId, @RequestBody ShopUpdateDTO shopUpdateDTO) {
-        return shopService.updateShop(shopUpdateDTO, shopId);
+    public ResponseEntity<?> update(
+            @RequestPart(value = "shopid") Long shopId,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "shop") @Valid ShopUpdateDTO shopUpdateDTO) {
+        return shopService.updateShop(shopUpdateDTO, shopId, image);
     }
 
 
@@ -66,58 +78,54 @@ public class ShopController {
         return ResponseEntity.ok(shopLikeResponseDtos);
     }
 
+    //소품샵 상세보기
     @GetMapping("/find")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> findByShopName(@RequestParam String shopName) {
         Shop findShop = shopService.findShopByShopName(shopName);
-        ShopResponseDTO.ShopFindResponseDTO returnShop = ShopResponseDTO.ShopFindResponseDTO.builder()
+        ShopResponseDTO.ShopDetailsResponseDTO returnShop = ShopResponseDTO.ShopDetailsResponseDTO.builder()
                 .id(findShop.getId())
+                .image(findShop.getImage())
                 .shopName(findShop.getShopName())
+                .ownerPhone(findShop.getOwnerPhone())
+                .latitude(findShop.getLocation().getX())
+                .longitude(findShop.getLocation().getY())
+                .openAt(findShop.getOpenAt())
+                .closeAt(findShop.getCloseAt())
+                .likeShop(findShop.getLikeShop())
+                .shopTags(findShop.getShopTags())
                 .build();
+
         return ResponseEntity.ok(returnShop);
     }
 
-/*
-    @GetMapping("/find/all")
-    public ResponseEntity<List<ShopResponseDTO>> findAll() {
-        List<Shop> shops = shopService.findShopAll();
-        return getShopResponseDTO(shops);
-
-    }
-
-*/
-
     @GetMapping("/find/tag")
-    public ResponseEntity<List<ShopResponseDTO.ShopMainResponseDTO>> findByTag(@RequestParam List<String> tag,
-                                                           @RequestParam double latitude,
-                                                           @RequestParam double longitude) {
+    public ResponseEntity<List<ShopResponseDTO.ShopFindResponseDTO>> findByTag(@RequestParam List<String> tag,
+                                                                               @RequestParam double latitude,
+                                                                               @RequestParam double longitude) {
         Set<Shop> shops = shopService.findShopWithTagAndRadius(tag, latitude, longitude);
         List<Shop> shopList = new ArrayList<>(shops);
         return getShopResponseDTO(shopList);
     }
 
     @GetMapping("/find/near")
-    public ResponseEntity<List<ShopResponseDTO.ShopMainResponseDTO>> findByLocation(@RequestParam double latitude,
-                                                                @RequestParam double longitude) {
+    public ResponseEntity<List<ShopResponseDTO.ShopFindResponseDTO>> findByLocation(@RequestParam double latitude,
+                                                                                    @RequestParam double longitude) {
         List<Shop> shops = shopService.findShopWithMyLocation(latitude, longitude);
         return getShopResponseDTO(shops);
     }
 
-    private ResponseEntity<List<ShopResponseDTO.ShopMainResponseDTO>> getShopResponseDTO(List<Shop> shops) {
-        List<ShopResponseDTO.ShopMainResponseDTO> shopResponseDTO = shops.stream().map(shop -> ShopResponseDTO.ShopMainResponseDTO.builder()
-                        .id(shop.getId())
+    private ResponseEntity<List<ShopResponseDTO.ShopFindResponseDTO>> getShopResponseDTO(List<Shop> shops) {
+        List<ShopResponseDTO.ShopFindResponseDTO> shopResponseDTO = shops.stream().map(shop -> ShopResponseDTO.ShopFindResponseDTO.builder()
                         .shopName(shop.getShopName())
                         .ownerPhone(shop.getOwnerPhone())
-                        .ownerName(shop.getOwnerName())
                         .latitude(shop.getLocation().getY()) // 위도
                         .longitude(shop.getLocation().getX()) // 경도
                         .shopTags(shop.getShopTags())
+                        .image(shop.getImage())
                         .build())
                 .collect(Collectors.toList());
-
-
         return ResponseEntity.ok(shopResponseDTO);
     }
-
 
 }
