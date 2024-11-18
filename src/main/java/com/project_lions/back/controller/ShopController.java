@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class ShopController {
 
     private final ShopService shopService;
-    private final S3Service s3Service;
 
     @PostMapping(value="", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -35,7 +34,7 @@ public class ShopController {
     }
 
 
-    @DeleteMapping("/delete")  //해야할 것: 삭제 메소드500번 뜨는것 + shopId 어떻게 하면 좋을지
+    @DeleteMapping("/delete")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> delete(@RequestParam Long shopId) {
         return shopService.deleteShop(shopId);
