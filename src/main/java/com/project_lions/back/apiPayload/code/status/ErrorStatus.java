@@ -20,14 +20,22 @@ public enum ErrorStatus implements BaseErrorCode {
   MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4001", "존재하지 않는 사용자 입니다."),
   MEMBER_INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER4002", "비밀번호가 옳지 않습니다."),
   MEMBER_EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT, "MEMBER4003", "이미 존재하는 사용자입니다."),
+  MEMBER_INCONSISTENCY(HttpStatus.BAD_REQUEST, "MEMBER4004", "일치하지 않는 사용자 입니다."),
 
   // 파일 관련 에러
   FILE_DUPLICATE(HttpStatus.CONFLICT, "FILE4001", "이미 존재하는 파일입니다."),
   FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE4002", "존재하지 않는 파일입니다."),
   FILE_FAIL_DELETE(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 삭제에 실패하였습니다."),
   FILE_FAIL_UPLOAD(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4004", "파일 업로드에 실패하였습니다."),
-  FILE_NOT_SUPPORTED_EXTENSION(HttpStatus.BAD_REQUEST, "FILE4005", "지원하지 않는 확장자입니다.")
-  ;
+  FILE_NOT_SUPPORTED_EXTENSION(HttpStatus.BAD_REQUEST, "FILE4005", "지원하지 않는 확장자입니다."),
+
+  // 리뷰 관련 에러
+  REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4001", "존재하지 않는 리뷰 입니다."),
+  REVIEW_INCONSISTENCY(HttpStatus.BAD_REQUEST, "REVIEW4002", "일치하지 않는 리뷰 입니다."),
+  REVIEW_NOT_PLACE(HttpStatus.BAD_REQUEST, "REVIEW4003", "리뷰를 쓸 수 없는 장소 입니다."),
+
+  // 소품샵 관련 에러
+  SHOP_NOT_FOUND(HttpStatus.NOT_FOUND, "SHOP4001", "존재하지 않는 소품샵 입니다.");
 
   private final HttpStatus httpStatus;
   private final String code;
