@@ -26,7 +26,7 @@ public class ChatService {
         SecurityUtil.getLoginUsername()).orElseThrow(()
         -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    if(memberRepository.existsById(targetId)){
+    if(!memberRepository.existsById(targetId)){
       throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
     }
 

@@ -19,7 +19,6 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -55,6 +54,7 @@ public class ShopService {
                 .shopName(shopDTO.getShopName())
                 .ownerPhone(member.getPhone())
                 .ownerName(member.getPhone())
+                .description(shopDTO.getDescription())
                 .openAt(shopDTO.getOpenAt())
                 .closeAt(shopDTO.getCloseAt())
                 .image(shopImage)
@@ -68,16 +68,21 @@ public class ShopService {
         return ResponseEntity.ok(shopDTO);
     }
 
-    public ResponseEntity<?> updateShop(ShopUpdateDTO shopDTO, Long shopId, MultipartFile image) {
+    public ResponseEntity<?> updateShop(ShopUpdateDTO shopDTO, String originShopName, MultipartFile image) {
 
         Member member = findMember();
-        Optional<Shop> checkShop=shopRepository.findById(shopId);
+        Optional<Shop> updateShop=shopRepository.findByShopName(originShopName);
 
-        if(checkShop.isEmpty()){
+        if(updateShop.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(checkShop.get().getOwner().equals(member)){
+        if (shopRepository.existsByShopName(shopDTO.getShopName())&&
+        !updateShop.get().getShopName().equals(shopDTO.getShopName())) {
+            throw new IllegalArgumentException("이미 존재하는 소품샵 이름입니다.");
+        }
+
+        if(updateShop.get().getOwner().equals(member)){
             Set<String> tags=shopDTO.getShopTags();
             Set<Tag> tagList= checkTagExist(tags);
             if(tagList == null){
@@ -86,11 +91,10 @@ public class ShopService {
             Point shopLocation = createPoint(shopDTO.getLatitude(), shopDTO.getLongitude());
             String shopImage = s3Service.saveFile(image);
 
-            Optional<Shop> updateShop=shopRepository.findById(shopId);
-
             updateShop.get().setShopName(shopDTO.getShopName());
             updateShop.get().setOwnerPhone(shopDTO.getOwnerPhone());
             updateShop.get().setOwnerName(shopDTO.getOwnerName());
+            updateShop.get().setDescription(shopDTO.getDescription());
             updateShop.get().setLocation(shopLocation);
             updateShop.get().setShopTags(tagList);
             updateShop.get().setOpenAt(shopDTO.getOpenAt());

@@ -36,6 +36,8 @@ public class Shop {
     @Column(nullable = false)
     private String ownerName; //대표명
 
+    private String description; //소개글
+
     @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm")
     private LocalTime openAt; //오픈시간

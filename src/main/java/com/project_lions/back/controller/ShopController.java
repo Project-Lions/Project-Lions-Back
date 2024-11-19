@@ -2,7 +2,6 @@ package com.project_lions.back.controller;
 
 import com.project_lions.back.domain.Shop;
 import com.project_lions.back.domain.dto.*;
-import com.project_lions.back.service.S3Service;
 import com.project_lions.back.service.ShopService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,10 +42,10 @@ public class ShopController {
     @PutMapping(value="/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> update(
-            @RequestPart(value = "shopid") Long shopId,
+            @RequestPart(value = "originshop") String originShopName,
             @RequestPart(value = "image", required = false) MultipartFile image,
             @RequestPart(value = "shop") @Valid ShopUpdateDTO shopUpdateDTO) {
-        return shopService.updateShop(shopUpdateDTO, shopId, image);
+        return shopService.updateShop(shopUpdateDTO, originShopName, image);
     }
 
 
@@ -66,14 +65,12 @@ public class ShopController {
 
         List<ShopResponseDTO.ShopLikeResponseDto> shopLikeResponseDtos = shops.stream().map(shop -> ShopResponseDTO.ShopLikeResponseDto.builder()
                         .shopName(shop.getShopName())
-                        .likeShop(shop.getLikeShop())
                         .latitude(shop.getLocation().getX())
                         .longitude(shop.getLocation().getY())
                         .openAt(shop.getOpenAt())
                         .closeAt(shop.getCloseAt())
                         .build())
                 .toList();
-        System.out.println("shopLikeResponseDtos = " + shopLikeResponseDtos.toString());
         return ResponseEntity.ok(shopLikeResponseDtos);
     }
 

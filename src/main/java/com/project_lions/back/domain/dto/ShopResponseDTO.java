@@ -9,7 +9,6 @@ import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,9 +31,6 @@ public class ShopResponseDTO {
 
         @JsonFormat(pattern = "HH:mm")
         private LocalTime closeAt;//마감시간
-
-        @Enumerated(EnumType.STRING)
-        private Like likeShop;
 
         private String image;
     }
@@ -86,7 +82,7 @@ public class ShopResponseDTO {
         @Builder.Default
         private Set<Tag> shopTags =  new HashSet<>();
 
-        //채팅추가
+        private String description; //소개글
 
     }
 

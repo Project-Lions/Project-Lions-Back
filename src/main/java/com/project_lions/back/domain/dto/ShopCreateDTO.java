@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +19,8 @@ public class ShopCreateDTO {
     private double latitude;  // 위도
 
     private double longitude; // 경도
+
+    private String description;
 
     @JsonFormat(pattern = "HH:mm")
     private LocalTime openAt;
