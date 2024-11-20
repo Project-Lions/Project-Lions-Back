@@ -2,11 +2,12 @@ package com.project_lions.back.service;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.IOUtils;
 import com.project_lions.back.apiPayload.code.status.ErrorStatus;
 import com.project_lions.back.apiPayload.exception.handler.FileUploadHandler;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,6 +17,10 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -146,4 +151,21 @@ public class S3Service {
     }
     return fileExtension;
   }
+/*
+  //이미지 다운로드
+  public ResponseEntity<byte[]> getObject(String storedFileName) throws IOException{
+    S3Object o = amazonS3.getObject(new GetObjectRequest(bucket, storedFileName));
+    S3ObjectInputStream objectInputStream = o.getObjectContent();
+    byte[] bytes = IOUtils.toByteArray(objectInputStream);
+
+    String fileName = URLEncoder.encode(storedFileName, "UTF-8").replaceAll("\\+", "%20");
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    httpHeaders.setContentLength(bytes.length);
+    httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+    return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+
+  }
+*/
 }
